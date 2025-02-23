@@ -1,6 +1,6 @@
 import os
 import pickle
-
+from locales.translation import lang
 
 def save_cookies(driver, path):
     pass
@@ -45,53 +45,46 @@ async def login(driver, username, password, cookies_path="cookies.pkl"):
 
 async def login_facebook(driver, username, password, cookies_path="cookies.pkl"):
     """Log in to Instagram using Facebook credentials."""
-    tab = await driver.get("https://www.instagram.com")
+    tab = await driver.get("https://www.facebook.com/login.php?next=https%3A%2F%2Fwww.facebook.com%2Foidc%2F%3Fapp_id%3D124024574287414%26redirect_uri%3Dhttps%3A%2F%2Fwww.instagram.com%2Faccounts%2Fsignupviafb%2F%26response_type%3Dcode%26scope%3Dopenid%2Bemail%2Bprofile%2Blinking%26state%3DATBXRSuShMyQrdYrzpeTUEQCCkjoCUfK4n4DXNyEXUFqjR1vjW70TMCYNb8qMnyrbMlA5PyzYmismCuITOXsL6bRipLXQ8pa5RtV8_0aOcPiuQh4UYyH0VLbXb2_RuEluEmOkZzcVB6CsFxVE6Xx_fpWA_p5hBXAgEh_QmU71q2HdsQ-Ec4fCljsoFa_diIDjVFi7vS529B98f0Zp8-RRkI21hFO-Xv6JyCcmq4yxeDiSSboCCbkzVZdE244Z4Q1ZCGr")
     if os.path.exists(cookies_path):
         load_cookies(driver, cookies_path)
         tab = await driver.get("https://www.instagram.com")  # Reload the page with cookies
     else:
-        # Accept Instagram cookies
-        cookie_bar_accept = await tab.find("Permitir todas las cookies", best_match=True)
-        if cookie_bar_accept:
-            await cookie_bar_accept.click()
-        else:
-            print("Instagram cookies accepts button not found")
-
-        # Log in with Facebook
-        login_with_facebook = await tab.find_all("iniciar sesión con facebook")
-        await tab.sleep(2)
-
-        if login_with_facebook:
-            await login_with_facebook[2].click()
-        else:
-            print("Facebook login button not found")
-            return
-        await tab.sleep(2)
         # Accept Facebook cookies (if appears)
-        accept_fb_cookies = await tab.find_all("Permitir todas las cookies")
-        if accept_fb_cookies:
-            await accept_fb_cookies[3].click()
+        decline_fb_cookies = await tab.find(lang.t('fb.cookies') , True)
+        if decline_fb_cookies:
+            await decline_fb_cookies.click()
         else:
+            source = await tab.evaluate("document.documentElement.outerHTML")
+            with open('fb_cookies.html', 'w', encoding='utf-8') as file:
+                file.write(source)
             print("Facebook cookies accepts button not found")
 
         await tab.sleep(2)
         # Fill in the Facebook login form
-        print("Finding the email and password input field")
-        email = await tab.select("input[name=email]")
-        passsword = await tab.select("input[name=pass]")
+        email = await tab.select(f"input[name={lang.t('fb.login.email')}]")
+        passsword = await tab.select(f"input[name={lang.t('fb.login.password')}]")
 
-        print("Clicking 'Log In' button")
-        login_fb = await tab.find(text="Iniciar sesión")
+        # Log in with Facebook
+        login_fb = await tab.find(text=lang.t('fb.login.button'))
         if login_fb:
             await email.send_keys(username)
             await passsword.send_keys(password)
-            await tab.sleep(6)
+            await tab.sleep(12)
             await login_fb.mouse_click()
             print("Login form submitted")
         else:
-            print("Facebook login fields not found")
+            source = await tab.evaluate("document.documentElement.outerHTML")
+            with open('fb_form.html', 'w', encoding='utf-8') as file:
+                file.write(source)
+            print("Login form not found")
+        banner = await tab.find_all(lang.t('ig.home.banner'))
+        if banner:
+            print("Banner found")
+        else:
+            print("Banner not found")
+        tab.save_screenshot("from_login.png")
 
-        await tab.find_all("Para ti")
         # Save cookies after logging in
         # save_cookies(driver, cookies_path)
 

@@ -3,7 +3,6 @@ FROM python:3.9-slim
 # --- Configuración básica ---
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONPATH=/app
-ENV DISPLAY=99
 
 RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
     echo "America/New_York" > /etc/timezone
@@ -46,7 +45,10 @@ COPY presets /app/presets
 COPY common /app/common
 COPY actions /app/actions
 COPY capcha_evasion /app/capcha_evasion
+COPY locales /app/locales
 
 # Instalar Requirements
 RUN pip install -r requirements.txt
+
+CMD ["/bin/bash"]
 

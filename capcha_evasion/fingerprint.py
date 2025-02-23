@@ -9,4 +9,4 @@ def load_profiles(file_path):
 
 
 async def start_browser(profile):
-    return await nd.start(browser_args=['--headless=new'])
+    return await nd.start(browser_args=['--headless=new', '--no-sandbox'])

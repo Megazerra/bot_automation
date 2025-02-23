@@ -1,0 +1,20 @@
+{
+  "fb": {
+    "cookies": "rechazar cookies opcionales",
+    "login": {
+      "email": "email",
+      "password": "pass",
+      "button": "iniciar sesión"
+    }
+  },
+  "ig":{
+    "cookies": "",
+    "home":{
+      "banner": "para ti"
+    },
+    "actions": {
+      "follow": "seguir"
+    }
+  }
+  }
+}
