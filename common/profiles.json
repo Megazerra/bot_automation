@@ -1,0 +1,18 @@
+[
+  {
+    "name": 1,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+    "language": "es-ES",
+    "window_size": "1920,1080",
+    "proxy": false,
+    "headless": true
+  },
+  {
+    "name": 2,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
+    "language": "en-US",
+    "window_size": "1366,768",
+    "proxy": null,
+    "headless": false
+  }
+]
