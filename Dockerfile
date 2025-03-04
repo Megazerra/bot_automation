@@ -4,8 +4,8 @@ FROM python:3.9-slim
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONPATH=/app
 
-RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
-    echo "America/New_York" > /etc/timezone
+RUN ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
+    echo "Europe/Paris" > /etc/timezone
 
 # Se asume que el WORKDIR original es /app
 WORKDIR /app
@@ -49,6 +49,4 @@ COPY locales /app/locales
 
 # Instalar Requirements
 RUN pip install -r requirements.txt
-
-CMD ["/bin/bash"]
 

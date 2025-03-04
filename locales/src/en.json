@@ -8,9 +8,40 @@
     }
   },
   "ig":{
-    "cookies": "",
+    "cookies": "decline optional cookies",
+    "2fa" : {
+      "input": "verificationCode",
+      "button": "confirm"
+    },
+    "login": {
+      "email": "username",
+      "password": "password",
+      "button": "log in"
+    },
     "home":{
       "banner": "for you"
+    }
+  },
+  "th": {
+    "cookies": "decline optional cookies",
+    "2fa" : {
+      "title": "Two-factor authentication",
+      "input": "Security code",
+      "button": "Submit"
+    },
+    "login": {
+      "username": "Username, phone or email",
+      "password": "Password",
+      "button": "Log in",
+      "start": "log in",
+      "banner": "How would you like to use Threads?",
+      "instagram": "continue with instagram",
+      "role": "button"
+    }
+  },
+  "common": {
+    "buttons": {
+      "following": "following"
     },
     "actions": {
       "follow": "follow"

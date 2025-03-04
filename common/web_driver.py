@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from capcha_evasion.fingerprint import load_profiles, start_browser
+from common.browser import start_browser
 
 
 async def init_browser():
