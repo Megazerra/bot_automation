@@ -8,13 +8,43 @@
     }
   },
   "ig":{
-    "cookies": "",
+    "cookies": "rechazar cookies opcionales",
+    "2fa" : {
+      "input": "verificationCode",
+      "button": "confirmar"
+    },
+    "login": {
+      "email": "username",
+      "password": "password",
+      "button": "entrar"
+    },
     "home":{
       "banner": "para ti"
+    }
+  },
+  "th": {
+    "cookies": "rechazar cookies opcionales",
+    "2fa" : {
+      "title": "Autenticación en dos pasos",
+      "input": "Código de seguridad",
+      "button": "Enviar"
+    },
+    "login": {
+      "username": "nombre de usuario",
+      "password": "contraseña",
+      "button": "iniciar sesión",
+      "start": "entrar",
+      "banner" : "¿Cómo quieres usar Threads?",
+      "instagram": "continuar con instagram",
+      "role": "button"
+    }
+  },
+  "common": {
+    "buttons": {
+      "following": "siguiendo"
     },
     "actions": {
       "follow": "seguir"
     }
-  }
   }
 }
