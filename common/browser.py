@@ -1,10 +1,8 @@
-import asyncio
 import json
 import platform
 import nodriver as uc
-from nodriver.cdp import fetch
 from capcha_evasion.profiles import stealth_script
-from common.oxylabs import Oxylabs, start_gost_proxy
+from common.oxylabs import Oxylabs
 
 
 def load_profiles(file_path):
@@ -21,6 +19,8 @@ async def start_browser():
 
 # --- 4. Función para iniciar navegador con un perfil dado ---
 async def launch_browser_with_profile(profile_name, profile_data):
+    oxy = Oxylabs()
+
     """Lanza Chrome con el perfil especificado y realiza una navegación de prueba."""
     ua = profile_data["user_agent"]
     tz = profile_data["timezone"]
@@ -37,17 +37,12 @@ async def launch_browser_with_profile(profile_name, profile_data):
         "--force-webrtc-ip-handling-policy=disable_non_proxied_udp",
         # WebRTC solo usará interfaz de red pública (no filtra IP local)
         "--disable-features=WebRtcHideLocalIpsWithMdns",  # Deshabilita mDNS (para que IP local no se filtre via WebRTC)
-        "--disable-features=Translate",
-        "--headless=new"
+        "--disable-features=Translate"
+        #"--headless=new"
     ]
     if proxy:
-        rport: int = 2000
-        oxy = Oxylabs()
-        cc = profile_data["languages"].split("-")[1].split(",")[0]
-        city = profile_data["timezone"].split("/")[1]
-        _proxy: dict = oxy.get_proxy(cc, city)
-        start_gost_proxy(_proxy['proxy'].get('https'), rport)
-        args.append(f"--proxy-server=socks5://localhost:{rport}")
+        oxy.set_location(profile_data["languages"].split("-")[1].split(",")[0], profile_data["timezone"].split("/")[1])
+        args.append(f"--proxy-server={oxy.PROXY}")
 
     # Incluir path al ejecutable de Chrome si es necesario (según SO)
     chrome_path = None
@@ -62,9 +57,12 @@ async def launch_browser_with_profile(profile_name, profile_data):
         browser_executable_path=chrome_path if chrome_path else None,
         browser_args=args
     )
-
     # Abrir una nueva pestaña en blanco antes de navegar, para aplicar ajustes CDP
+
     tab = await browser.get("about:blank")
+
+    if proxy:
+        await oxy.setup_proxy(tab)
 
     # Configurar zona horaria y geolocalización usando DevTools (CDP) antes de cargar el sitio real
     from nodriver import cdp  # importar herramientas CDP de nodriver
@@ -82,8 +80,9 @@ async def launch_browser_with_profile(profile_name, profile_data):
     # Inyectar el script stealth de fingerprint en todas las páginas nuevas
     await tab.send(cdp.page.add_script_to_evaluate_on_new_document(source=stealth_script))
 
+    '''
     # Navegar a un sitio de prueba para verificar la huella (por ejemplo, whoer.net o amiunique.org)
-    test_url = "https://httpbin.org/headers"  # httpbin devolverá cabeceras, incluyendo User-Agent, para ver cambios
+    test_url = "https://httpbin.org/headers" # httpbin devolverá cabeceras, incluyendo User-Agent, para ver cambios
     test_url = "https://deviceandbrowserinfo.com/info_device"
     await tab.send(cdp.page.navigate(url=test_url))
 
@@ -95,41 +94,8 @@ async def launch_browser_with_profile(profile_name, profile_data):
     print(f"[{profile_name}] Título de la página: {target.title}")
     print(f"[{profile_name}] URL visitada: {target.url}")
 
-    '''
     # Cerrar el navegador al terminar la sesión
     browser.stop()
     print(f"[{profile_name}] Sesión finalizada.\n")
     '''
     return browser
-
-
-async def setup_proxy(username, password, tab):
-    async def auth_challenge_handler(event: fetch.AuthRequired):
-        # Respond to the authentication challenge
-        await tab.send(
-            fetch.continue_with_auth(
-                request_id=event.request_id,
-                auth_challenge_response=fetch.AuthChallengeResponse(
-                    response="ProvideCredentials",
-                    username=username,
-                    password=password,
-                ),
-            )
-        )
-
-    async def req_paused(event: fetch.RequestPaused):
-        # Continue with the request
-        await tab.send(fetch.continue_request(request_id=event.request_id))
-
-    # Add handlers for fetch events
-    tab.add_handler(
-        fetch.RequestPaused, lambda event: asyncio.create_task(req_paused(event))
-    )
-    tab.add_handler(
-        fetch.AuthRequired,
-        lambda event: asyncio.create_task(auth_challenge_handler(event)),
-    )
-
-    # Enable fetch domain with auth requests handling
-    await tab.send(fetch.enable(handle_auth_requests=True))
-

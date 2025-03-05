@@ -7,8 +7,6 @@ from common.browser import launch_browser_with_profile
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from common.web_driver import init_browser
-
 
 async def main():
     try:

@@ -1,5 +1,7 @@
 import os
 import pickle
+
+from actions.print_ip import print_ip
 from common.totp_2fa import get_totp
 from locales.translation import lang
 
@@ -112,14 +114,15 @@ async def login_facebook(driver, username, password, cookies_path="cookies.pkl")
             print("Banner found")
         else:
             print("Banner not found")
-        # await tab.save_screenshot("from_login.png")
 
         # Save cookies after logging in
         # save_cookies(driver, cookies_path)
 
 
-async def login_threads(driver, username, password):
-    tab = await driver.get("https://www.threads.net/login/?show_choice_screen=false")
+async def login_threads(browser, username, password):
+    await print_ip(browser)
+
+    tab = await browser.get("https://www.threads.net/login/?show_choice_screen=false")
     await lang.set_lang(tab)
 
     th_cookies = await tab.find(lang.t("th.cookies"), True)
@@ -162,6 +165,8 @@ async def login_threads(driver, username, password):
         print("Banner found")
     else:
         print("Banner not found")
+    await tab.save_screenshot("from_login.png")
+
 
 def logout(driver, cookies_path):
     """Log out from Instagram."""
