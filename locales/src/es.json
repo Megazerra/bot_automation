@@ -30,10 +30,10 @@
       "button": "Enviar"
     },
     "login": {
-      "username": "nombre de usuario",
-      "password": "contraseña",
-      "button": "iniciar sesión",
-      "start": "entrar",
+      "username": "Nombre de usuario, teléfono o correo electrónico",
+      "password": "Contraseña",
+      "button": "Iniciar sesión",
+      "start": "Entrar",
       "banner" : "¿Cómo quieres usar Threads?",
       "instagram": "continuar con instagram",
       "role": "button"

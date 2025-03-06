@@ -1,6 +1,6 @@
 import sys
 import os
-import nodriver as nd
+import nodriver as uc
 from capcha_evasion import profiles as evasion
 from common.browser import launch_browser_with_profile
 
@@ -17,7 +17,7 @@ async def main(username, password, target_user):
         # Iniciar sesión en Threads
         await login_threads(browser, username, password)
         # Seguir al usuario objetivo
-        # await follow_user(driver, target_user)
+        #await follow_user(browser, target_user)
 
         # stop_driver(driver)
     except Exception as e:
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     nd.loop().run_until_complete(main(user, passwd, target))
 '''
 if __name__ == "__main__":
-    loop = nd.loop()  # Obtiene el event loop de nodriver
+    loop = uc.loop()  # Obtiene el event loop de nodriver
 
     try:
         if len(sys.argv) != 4:
@@ -49,8 +49,8 @@ if __name__ == "__main__":
         passwd = sys.argv[2]
         target = sys.argv[3]
 
-        loop.run_until_complete(main(user, passwd, target))  # Ejecuta `main()` de forma asíncrona
-        loop.run_forever()  # Mantiene el event loop activo
+        loop.run_until_complete(main(user, passwd, target))
+        loop.run_forever()
     except KeyboardInterrupt:
         print("Interrupción manual detectada. Cerrando el programa.")
     finally:

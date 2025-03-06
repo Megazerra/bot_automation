@@ -52,3 +52,5 @@ class Oxylabs:
         # Enable fetch domain with auth requests handling
         await tab.send(fetch.enable(handle_auth_requests=True))
 
+        return tab
+

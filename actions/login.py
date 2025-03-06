@@ -1,18 +1,30 @@
 import os
 import pickle
-
+from nodriver import cdp
 from actions.print_ip import print_ip
 from common.totp_2fa import get_totp
 from locales.translation import lang
 
-def save_cookies(driver, path):
+async def save_cookies(browser, path):
     pass
+    # Obtener cookies en dos formatos
+    cookies = await browser.cookies.get_all()  # Obtiene las cookies de NoDriver
+    # Iniciar sesión en requests y transferir cookies
+    session = requests.Session()
+    for cookie in cookies:
+        session.cookies.set(cookie.name, cookie.value)  # Asegurar que se transfieren correctamente
+
+    # Verificar si las cookies están presentes en requests con httpbin.org
+    resp = session.get("https://httpbin.org/cookies", impersonate="chrome120")
+    print("Cookies enviadas en la solicitud:", resp.json())
+
     """Save cookies to a file."""
     #with open(path, 'wb') as file:
      #   pickle.dump(driver.get_cookies(), file)
 
 
 def load_cookies(driver, path):
+
     """Load cookies from a file."""
     with open(path, 'rb') as file:
         cookies = pickle.load(file)
@@ -121,10 +133,9 @@ async def login_facebook(driver, username, password, cookies_path="cookies.pkl")
 
 async def login_threads(browser, username, password):
     await print_ip(browser)
-
-    tab = await browser.get("https://www.threads.net/login/?show_choice_screen=false")
+    tab = browser.tabs[0]
+    await tab.send(cdp.page.navigate(url="https://www.threads.net/login/?show_choice_screen=false"))
     await lang.set_lang(tab)
-
     th_cookies = await tab.find(lang.t("th.cookies"), True)
     if th_cookies:
         await th_cookies.click()
@@ -135,9 +146,11 @@ async def login_threads(browser, username, password):
     if th_login:
         user = await tab.select(f"input[placeholder='{lang.t('th.login.username')}']")
         passwd = await tab.select(f"input[placeholder='{lang.t('th.login.password')}']")
+        await tab.sleep(2)
         await user.send_keys(username)
+        await tab.sleep(2)
         await passwd.send_keys(password)
-        await tab.sleep(5)
+        await tab.sleep(10)
         await th_login.click()
 
     th_login = await tab.find(username, True)

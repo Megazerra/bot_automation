@@ -1,8 +1,9 @@
+from nodriver import cdp
 from locales.translation import lang
-async def follow_user(driver, target_user):
-    tab = await driver.get(f"https://www.threads.net/@{target_user}")
+async def follow_user(browser, target_user):
+    tab = browser.tabs[0]
+    await tab.send(cdp.page.navigate(url=f"https://www.threads.net/@{target_user}"))
     await tab.sleep(1)
-    await lang.set_lang(tab)
 
     follow_button = await tab.find(lang.t('common.actions.follow'))
     if follow_button:

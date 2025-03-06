@@ -27,18 +27,19 @@ async def launch_browser_with_profile(profile_name, profile_data):
     geo = profile_data["geolocation"]
     accept_lang = profile_data.get("languages", "en-US,en")  # idioma por defecto si no especificado
     proxy = profile_data.get("proxy")
+    #proxy = None
 
     # Configurar argumentos de Chrome (user-agent, idiomas, proxy, deshabilitar WebRTC local IP, etc.)
     args = [
         f"--user-agent={ua}",
-        f"--lang={accept_lang}",
-        "--disable-blink-features=AutomationControlled",  # Oculta indicios de automatización
+        f"--lang={accept_lang.split(',')[1]}",
+        #"--disable-blink-features=AutomationControlled",  # Oculta indicios de automatización
         "--disable-gpu",  # (Opcional) evita usar GPU para estampar Canvas/WebGL, usa renderizado por software
         "--force-webrtc-ip-handling-policy=disable_non_proxied_udp",
         # WebRTC solo usará interfaz de red pública (no filtra IP local)
         "--disable-features=WebRtcHideLocalIpsWithMdns",  # Deshabilita mDNS (para que IP local no se filtre via WebRTC)
-        "--disable-features=Translate"
-        #"--headless=new"
+        "--disable-features=Translate",
+        "--headless=new"
     ]
     if proxy:
         oxy.set_location(profile_data["languages"].split("-")[1].split(",")[0], profile_data["timezone"].split("/")[1])
@@ -59,10 +60,10 @@ async def launch_browser_with_profile(profile_name, profile_data):
     )
     # Abrir una nueva pestaña en blanco antes de navegar, para aplicar ajustes CDP
 
-    tab = await browser.get("about:blank")
+    tab = await browser.get("draft:,")
 
     if proxy:
-        await oxy.setup_proxy(tab)
+        tab = await oxy.setup_proxy(tab)
 
     # Configurar zona horaria y geolocalización usando DevTools (CDP) antes de cargar el sitio real
     from nodriver import cdp  # importar herramientas CDP de nodriver
