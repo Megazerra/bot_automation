@@ -3,7 +3,6 @@ import pickle
 import sys
 
 from nodriver import cdp
-from actions.print_ip import print_ip
 from common.totp_2fa import get_totp
 from locales.translation import lang
 
@@ -54,11 +53,6 @@ async def login_facebook(driver, username, password, cookies_path="cookies.pkl")
 
 
 async def login_threads(browser, username, password):
-    try:
-        await print_ip(browser)
-    except Exception as e:
-        print(f"Error: {e}")
-
     tab = browser.tabs[0]
     await tab.send(cdp.page.navigate(url="https://www.threads.net/login/?show_choice_screen=false"))
     await lang.set_lang(tab)
@@ -90,7 +84,6 @@ async def login_threads(browser, username, password):
     if th_login:
         await th_login.click()
         print("Login successfully completed", flush=True)
-        sys.stdout.flush()
     else:
         Exception(f"Could not login Threads")
 

@@ -1,5 +1,6 @@
 import asyncio
 
+from nodriver import cdp
 from nodriver.cdp import fetch
 
 
@@ -51,6 +52,11 @@ class Oxylabs:
 
         # Enable fetch domain with auth requests handling
         await tab.send(fetch.enable(handle_auth_requests=True))
-
+        # -------- PROXY -------- #
+        await tab.send(cdp.page.navigate(url="https://ip.oxylabs.io/"))
+        await tab.sleep(2)
+        ip = await tab.evaluate("document.body.textContent.trim()")
+        print(f">= IP Address: {ip}")
+        # -------- PROXY -------- #
         return tab
 

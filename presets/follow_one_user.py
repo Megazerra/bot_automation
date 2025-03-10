@@ -14,7 +14,6 @@ async def main(username, password, target_user):
     browser = None
     try:
         print("Empezando", flush=True)
-
         perfil = evasion.profiles.get("perfil_windows_EEUU")
         browser = await launch_browser_with_profile("perfil_windows_EEUU", perfil)
         print("Perfil seleccionado", flush=True)

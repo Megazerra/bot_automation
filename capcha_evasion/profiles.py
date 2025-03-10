@@ -56,6 +56,14 @@ profiles = {
         "fonts": ["Arial", "Calibri", "Times New Roman"],
         "proxy": True
     },
+    "perfil_windows_EEUU2": {
+        "user_agent": USER_AGENTS["Windows"],
+        "timezone": "America/Boston",
+        "geolocation": {"lat": 42.3602, "lon": -71.0577},  # Boston, EE. UU.
+        "languages": "en-US,en",
+        "fonts": ["Arial", "Calibri", "Times New Roman"],
+        "proxy": True
+    },
     "perfil_linux_ES": {
         "user_agent": USER_AGENTS["Linux"],
         "timezone": "Europe/Madrid",

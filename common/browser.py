@@ -27,7 +27,6 @@ async def launch_browser_with_profile(profile_name, profile_data):
     geo = profile_data["geolocation"]
     accept_lang = profile_data.get("languages", "en-US,en")  # idioma por defecto si no especificado
     proxy = profile_data.get("proxy")
-    #proxy = None
 
     # Configurar argumentos de Chrome (user-agent, idiomas, proxy, deshabilitar WebRTC local IP, etc.)
     args = [
@@ -79,7 +78,7 @@ async def launch_browser_with_profile(profile_name, profile_data):
     # (Esto asume acceso interno a conexión CDP; nodriver puede exponerlo de otra forma)
 
     # Inyectar el script stealth de fingerprint en todas las páginas nuevas
-    await tab.send(cdp.page.add_script_to_evaluate_on_new_document(source=stealth_script))
+    # await tab.send(cdp.page.add_script_to_evaluate_on_new_document(source=stealth_script))
 
     '''
     # Navegar a un sitio de prueba para verificar la huella (por ejemplo, whoer.net o amiunique.org)
