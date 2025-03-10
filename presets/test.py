@@ -22,6 +22,7 @@ async def main():
         ip = await ip_page.evaluate("document.body.textContent.trim()")
         print(f">= IP Address: {ip}")
         # -------- PROXY -------- #
+
     except Exception as e:
         print("Error:", e)
         traceback.print_exc()
